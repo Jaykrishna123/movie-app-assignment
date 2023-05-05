@@ -82,7 +82,7 @@ export default function MovieList({ movies, loading, error }) {
                                 </div>
                                 {addlist && <div className={`toast ${addlist ? "toast-act" : ''}`}>Added to favourite list</div>}
                             </a>)}
-                        {info && <WatchPopup show={info} cancelPopup={onCancelPopup} addFavouriteList={addFavouriteList} movie={infodata} />}
+                        {info && <WatchPopup addlist={addlist} show={info} cancelPopup={onCancelPopup} addFavouriteList={addFavouriteList} movie={infodata} />}
                     </>
 
                 ) : error ? (

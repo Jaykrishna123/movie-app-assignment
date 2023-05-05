@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import React from 'react'
 
-export default function WatchPopup({ show, movie, cancelPopup, addFavouriteList }) {
+export default function WatchPopup({ show, movie, addlist, cancelPopup, addFavouriteList }) {
     console.log(movie)
     const myLoader = ({ src, width, quality }) => {
         return `https://image.tmdb.org/t/p/w185${src}`
@@ -29,6 +29,7 @@ export default function WatchPopup({ show, movie, cancelPopup, addFavouriteList 
                         <button title='favourite list' className='list' onClick={() => addFavouriteList(movie)}>+</button>
                     </div>
                 </div>
+                {addlist && <div className={`toast ${addlist ? "toast-act" : ''}`}>Added to favourite list</div>}
             </div>
 
 
@@ -128,6 +129,27 @@ export default function WatchPopup({ show, movie, cancelPopup, addFavouriteList 
             -webkit-box-orient: vertical;
                 color: white;
                 opacity: 0.7;
+              }
+              .toast{
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 100;
+                visibility: visible;
+                min-width: 100px;
+                background-color: #fff;
+                color: #000;
+                opacity: 0;
+                text-align: center;
+                border-radius: 2em;
+                padding: 1em 1.5625em;
+                font-weight: 600;
+                transition: opacity 0.5s ease-in-out;
+                font-size: 14px;  
+              }
+              .toast-act{
+                opacity:1;
               }
             
             `
