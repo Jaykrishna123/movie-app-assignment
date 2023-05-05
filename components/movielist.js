@@ -1,25 +1,19 @@
 import Image from 'next/image';
-import React, { useState } from 'react'
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react'
+import WatchPopup from './watchpopup';
 
-const MovieListItem = styled.a`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
-    cursor: pointer;
-`;
-
-
-const Title = styled.span`
-  margin-top: 20px;
-  font-size: 16px;
-  display:block;
-  text-align:center;
-`;
+var mediaqry;
 export default function MovieList({ movies, loading, error }) {
     console.log(movies, 'movies')
     const [addlist, setAddList] = useState(false);
+    const [info, setInfo] = useState(false);
+    const [infodata, setInfoData] = useState([]);
+    const [mediaquery, setMediaQuery] = useState(false)
+
+    useEffect(() => {
+        mediaqry = window.matchMedia("(max-width: 960px)")
+        setMediaQuery(mediaqry.matches)
+    },[])
 
     const myLoader = ({ src, width, quality }) => {
         return `https://image.tmdb.org/t/p/w185${src}`
@@ -31,6 +25,16 @@ export default function MovieList({ movies, loading, error }) {
         setTimeout(() => {
             setAddList(false);
         }, 1000)
+    }
+
+    const watchInfo = (data) => {
+        if (mediaquery) {
+            setInfo(true)
+            setInfoData(data)
+        }
+    }
+    const onCancelPopup = () => {
+        setInfo(false)
     }
 
     return (
@@ -51,7 +55,7 @@ export default function MovieList({ movies, loading, error }) {
                 : movies.length ? (
                     <>
                         {movies.map((movie, index) =>
-                            <div className='container' key={index}>
+                            <a className='container' key={index} onClick={() => watchInfo(movie)}>
                                 <div className='main-container heroVerticalCard verticalCardItem'>
                                     {movie.poster_path && (
                                         <div className='vertical-image'>
@@ -65,19 +69,20 @@ export default function MovieList({ movies, loading, error }) {
                                             />
                                         </div>
                                     )}
-                                    <span style={{textAlign:'center',display:'block'}}>{movie.title}</span>
+                                    <span style={{ textAlign: 'center', display: 'block' }}>{movie.title}</span>
                                     <div className='cardContent'>
                                         <div className='content'>
                                             <span>{movie.title}</span>
                                             <span>{movie.release_date}</span>
                                             <span>{movie.vote_count}</span>
                                             <p className='desc'>{movie.overview}</p>
-                                            <a title='favourite list' className='list' onClick={() => addFavouriteList(movie)}>+</a>
+                                            <button title='favourite list' className='list' onClick={() => addFavouriteList(movie)}>+</button>
                                         </div>
                                     </div>
                                 </div>
                                 {addlist && <div className={`toast ${addlist ? "toast-act" : ''}`}>Added to favourite list</div>}
-                            </div>)}
+                            </a>)}
+                        {info && <WatchPopup show={info} cancelPopup={onCancelPopup} addFavouriteList={addFavouriteList} movie={infodata} />}
                     </>
 
                 ) : error ? (
@@ -116,30 +121,26 @@ export default function MovieList({ movies, loading, error }) {
             }
                 .verticalCardItem {
                 transition: transform .25s cubic-bezier(0.33, 0.04, 0.63, 0.93);
+                dsiplay:none;
               }
     
-             .verticalCardItem:hover {
-                position: absolute;
-                width: 100%;
-                transform : scale(1.1);
-                z-index: 4;
-              }
+
               .cardContent {
                 position: absolute;
                 bottom: 0;
-                width: 100%;
+                width: 90%;
                 padding: 14px 0;
                 background-color:#2A2A2A;
                 visibility: hidden;
-                display: block;
                 opacity: 0;
                 transition: opacity .25s ease-in,bottom .25s cubic-bezier(0.33, 0.04, 0.63, 0.93);
                 border-bottom-left-radius: 10px;
                 border-bottom-right-radius: 10px;
+                transform: translate(11px, 0px);
               }
               .verticalCardItem:hover .cardContent {
-                visibility: visible;
-                opacity: 1
+                visibility: hidden;
+                opacity: 0;
               }
               .content{
                 display: flex;
@@ -244,6 +245,24 @@ export default function MovieList({ movies, loading, error }) {
                 .desc{
                     -webkit-line-clamp: 3;
                 }
+                .cardContent{
+                    display:block;
+                }
+                .verticalCardItem:hover {
+                    position: absolute;
+                    width: 100%;
+                    transform : scale(1.1);
+                    z-index: 4;
+                  }
+            }
+            @media screen and (min-width: 1300px){
+                .cardContent{
+                    transform: translate(10px, 0px);
+                }
+                .verticalCardItem:hover .cardContent {
+                    visibility: visible;
+                    opacity: 1;
+                  }
             }
     
          `}

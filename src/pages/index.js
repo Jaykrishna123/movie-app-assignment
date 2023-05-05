@@ -6,17 +6,16 @@ import Search from "../../components/search";
 export default function Home(props) {
   const { serverdata } = props;
   const [searchQuery, setSearchQuery] = useState('');
-  const [movies, setMovies] = useState(serverdata.results);
+  const [movies, setMovies] = useState(serverdata?.results);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-
   const searchHandleChange = (e) => {
-    if(e.target.value === "") {
-      setMovies(serverdata.results);
+    if (e.target.value === "") {
+      setMovies(serverdata?.results);
       setSearchQuery("")
     }
-    else{
+    else {
       setSearchQuery(e.target.value)
     }
   }
@@ -40,11 +39,11 @@ export default function Home(props) {
   };
   return (
     <>
-      {serverdata.results && serverdata.results.length > 0 &&
+      {serverdata?.results && serverdata.results.length > 0 &&
         <div className="container">
           <Search searchQuery={searchQuery} searchMovies={searchMovies} searchHandleChange={searchHandleChange} />
           <div className="wrapper">
-            <MovieList movies={movies} loading={loading} error={error}/>
+            <MovieList movies={movies} loading={loading} error={error} />
           </div>
         </div>
       }
@@ -73,7 +72,7 @@ export default function Home(props) {
         .wrapper{
           display:grid;
           gap:10px;
-          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         }
         @media screen and (min-width: 500px){
           .wrapper{
